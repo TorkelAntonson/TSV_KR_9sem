@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>{{ title }}</h1>
+
+<h2>Book Ciphers</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Author Last Name</th>
+            <th>Book Title</th>
+            <th>Library Cipher</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cipher in book_ciphers %}
+        <tr>
+            <td>{{ cipher.author_last_name }}</td>
+            <td>{{ cipher.book_title }}</td>
+            <td>{{ cipher.library_cipher }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No data available</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Recommended Literature</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Discipline</th>
+            <th>Author Last Name</th>
+            <th>Book Title</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for literature in recommended_literature %}
+        <tr>
+            <td>{{ literature.discipline_name }}</td>
+            <td>{{ literature.author_last_name }}</td>
+            <td>{{ literature.book_title }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No data available</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
