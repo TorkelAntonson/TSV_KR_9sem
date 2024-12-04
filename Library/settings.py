@@ -76,11 +76,14 @@ WSGI_APPLICATION = 'Library.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'TSV_KR',               # Название вашей базы данных
+        'USER': 'DB_user',             # Ваш PostgreSQL пользователь
+        'PASSWORD': '5146',             # Ваш PostgreSQL пароль
+        'HOST': 'localhost',            # Адрес сервера PostgreSQL (можно указать IP-адрес или оставить "localhost")192.168.0.119
+        'PORT': '63543',                 # Порт PostgreSQL (по умолчанию это 5432)57068
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

@@ -1,76 +1,253 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid black;
         }
         th, td {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
         }
         th {
             background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        form {
+            display: inline;
+        }
+        input[type="text"] {
+            padding: 5px;
+            margin: 5px;
+        }
+        .sort-arrow {
+            display: inline-block;
+            margin-left: 8px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+        th.asc .sort-arrow {
+            border-top: 5px solid black;
+        }
+        th.desc .sort-arrow {
+            border-bottom: 5px solid black;
         }
     </style>
 </head>
 <body>
-<h1>{{ title }}</h1>
+    <h1>Главная страница</h1>
 
-<h2>Book Ciphers</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Author Last Name</th>
-            <th>Book Title</th>
-            <th>Library Cipher</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cipher in book_ciphers %}
-        <tr>
-            <td>{{ cipher.author_last_name }}</td>
-            <td>{{ cipher.book_title }}</td>
-            <td>{{ cipher.library_cipher }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">No data available</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- Поля для поиска по книге и шифру (перемещено сюда) -->
+    <h2>Поиск</h2>
+    <div>
+        <!-- Поиск по рекомендуемой литературе -->
+        <h3>Поиск по рекомендуемой литературе</h3>
+        <input type="text" id="searchAuthor" placeholder="Поиск по автору">
+        <input type="text" id="searchBookTitle" placeholder="Поиск по названию книги">
+        <input type="text" id="searchDiscipline" placeholder="Поиск по дисциплине">
+    </div>
+    <!-- Результаты поиска для рекомендуемой литературы -->
+    <h2>Рекомендуемая литература</h2>
+    <table id="recommendedLiteratureTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable('recommendedLiteratureTable', 0)">Автор<span class="sort-arrow"></span></th>
+                <th onclick="sortTable('recommendedLiteratureTable', 1)">Название книги<span class="sort-arrow"></span></th>
+                <th onclick="sortTable('recommendedLiteratureTable', 2)">Дисциплина<span class="sort-arrow"></span></th>
+                <th>Удалить</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in recommended_literature %}
+                <tr>
+                    <td>{{ book.author_last_name }}</td>
+                    <td>{{ book.book_title }}</td>
+                    <td>{{ book.discipline_name }}</td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_id" value="{{ book.id }}">
+                            <button type="submit" name="delete_recommended_literature">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<h2>Recommended Literature</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Discipline</th>
-            <th>Author Last Name</th>
-            <th>Book Title</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for literature in recommended_literature %}
-        <tr>
-            <td>{{ literature.discipline_name }}</td>
-            <td>{{ literature.author_last_name }}</td>
-            <td>{{ literature.book_title }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">No data available</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
+    <div>
+        <!-- Поиск по шифрам книг -->
+        <h3>Поиск по шифрам книг</h3>
+        <input type="text" id="searchCipherAuthor" placeholder="Поиск по автору">
+        <input type="text" id="searchCipherBookTitle" placeholder="Поиск по названию книги">
+        <input type="text" id="searchCipherLibraryCipher" placeholder="Поиск по шифру библиотеки">
+    </div>
+
+    <!-- Результаты поиска для шифров книг -->
+    <h2>Шифры книг</h2>
+    <table id="bookCiphersTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable('bookCiphersTable', 0)">Автор<span class="sort-arrow"></span></th>
+                <th onclick="sortTable('bookCiphersTable', 1)">Название книги<span class="sort-arrow"></span></th>
+                <th onclick="sortTable('bookCiphersTable', 2)">Шифр библиотеки<span class="sort-arrow"></span></th>
+                <th>Удалить</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in book_ciphers %}
+                <tr>
+                    <td>{{ book.author_last_name }}</td>
+                    <td>{{ book.book_title }}</td>
+                    <td>{{ book.library_cipher }}</td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_id" value="{{ book.id }}">
+                            <button type="submit" name="delete_book_cipher">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Форма для добавления новой записи о рекомендуемой литературе (перемещена ниже) -->
+    <h2>Добавить рекомендуемую литературу</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ recommended_literature_form.as_p }}
+        <button type="submit" name="add_recommended_literature">Добавить</button>
+    </form>
+
+    <!-- Форма для добавления новой записи о шифре книги -->
+    <h2>Добавить шифр книги</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ book_cipher_form.as_p }}
+        <button type="submit" name="add_book_cipher">Добавить</button>
+    </form>
+
+    <h2>Объединённая таблица</h2>
+    <table id="mergedTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable('mergedTable', 0)">Автор<span class="sort-arrow"></span></th>
+                <th onclick="sortTable('mergedTable', 1)">Название книги<span class="sort-arrow"></span></th>
+                <th onclick="sortTable('mergedTable', 2)">Дисциплина<span class="sort-arrow"></span></th>
+                <th onclick="sortTable('mergedTable', 3)">Шифр библиотеки<span class="sort-arrow"></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in merged_data %}
+                <tr>
+                    <td>{{ item.author_last_name }}</td>
+                    <td>{{ item.book_title }}</td>
+                    <td>{{ item.discipline_name|default:"—" }}</td>
+                    <td>{{ item.library_cipher|default:"—" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+
+    <script>
+        // Функция для сортировки таблиц
+        function sortTable(tableId, columnIndex) {
+            let table = document.getElementById(tableId);
+            let rows = Array.from(table.rows).slice(1); // Пропускаем заголовок
+            let isAscending = table.querySelectorAll('th')[columnIndex].classList.contains('asc');
+            let sortedRows;
+
+            // Сортировка строк
+            sortedRows = rows.sort((rowA, rowB) => {
+                let cellA = rowA.cells[columnIndex].textContent.trim();
+                let cellB = rowB.cells[columnIndex].textContent.trim();
+            
+                cellA = isNaN(cellA) ? cellA : parseFloat(cellA);
+                cellB = isNaN(cellB) ? cellB : parseFloat(cellB);
+            
+                if (cellA < cellB) return isAscending ? -1 : 1;
+                if (cellA > cellB) return isAscending ? 1 : -1;
+                return 0;
+            });
+        
+            sortedRows.forEach(row => table.appendChild(row));
+        
+            // Переключаем направление сортировки и обновляем стрелки
+            let headers = table.querySelectorAll('th');
+            headers.forEach((th, index) => {
+                th.classList.remove('asc', 'desc');
+                if (index === columnIndex) {
+                    th.classList.add(isAscending ? 'desc' : 'asc');
+                }
+            });
+        }
+
+
+        // Функция для фильтрации строк таблиц
+        function filterTable() {
+            // Поиск в таблице "Рекомендуемая литература"
+            let searchAuthor = document.getElementById("searchAuthor").value.toLowerCase();
+            let searchBookTitle = document.getElementById("searchBookTitle").value.toLowerCase();
+            let searchDiscipline = document.getElementById("searchDiscipline").value.toLowerCase();
+            let recommendedTable = document.getElementById("recommendedLiteratureTable");
+            let recommendedRows = recommendedTable.getElementsByTagName("tr");
+
+            for (let i = 1; i < recommendedRows.length; i++) {
+                let cells = recommendedRows[i].getElementsByTagName("td");
+                let author = cells[0].textContent.toLowerCase();
+                let bookTitle = cells[1].textContent.toLowerCase();
+                let discipline = cells[2].textContent.toLowerCase();
+                if (author.includes(searchAuthor) && bookTitle.includes(searchBookTitle) && discipline.includes(searchDiscipline)) {
+                    recommendedRows[i].style.display = "";
+                } else {
+                    recommendedRows[i].style.display = "none";
+                }
+            }
+
+            // Поиск в таблице "Шифры книг"
+            let searchCipherAuthor = document.getElementById("searchCipherAuthor").value.toLowerCase();
+            let searchCipherBookTitle = document.getElementById("searchCipherBookTitle").value.toLowerCase();
+            let searchCipherLibraryCipher = document.getElementById("searchCipherLibraryCipher").value.toLowerCase();
+            let bookCiphersTable = document.getElementById("bookCiphersTable");
+            let bookCiphersRows = bookCiphersTable.getElementsByTagName("tr");
+
+            for (let i = 1; i < bookCiphersRows.length; i++) {
+                let cells = bookCiphersRows[i].getElementsByTagName("td");
+                let cipherAuthor = cells[0].textContent.toLowerCase();
+                let cipherBookTitle = cells[1].textContent.toLowerCase();
+                let libraryCipher = cells[2].textContent.toLowerCase();
+                if (cipherAuthor.includes(searchCipherAuthor) && cipherBookTitle.includes(searchCipherBookTitle) && libraryCipher.includes(searchCipherLibraryCipher)) {
+                    bookCiphersRows[i].style.display = "";
+                } else {
+                    bookCiphersRows[i].style.display = "none";
+                }
+            }
+        }
+        
+
+
+        // Добавляем обработчики для полей поиска
+        document.getElementById("searchAuthor").addEventListener("input", filterTable);
+        document.getElementById("searchBookTitle").addEventListener("input", filterTable);
+        document.getElementById("searchDiscipline").addEventListener("input", filterTable);
+        document.getElementById("searchCipherAuthor").addEventListener("input", filterTable);
+        document.getElementById("searchCipherBookTitle").addEventListener("input", filterTable);
+        document.getElementById("searchCipherLibraryCipher").addEventListener("input", filterTable);
+    </script>
 </body>
 </html>
