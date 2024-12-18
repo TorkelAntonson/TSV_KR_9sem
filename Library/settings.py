@@ -80,8 +80,8 @@ DATABASES = {
         'NAME': 'TSV_KR',               # Название вашей базы данных
         'USER': 'DB_user',             # Ваш PostgreSQL пользователь
         'PASSWORD': '5146',             # Ваш PostgreSQL пароль
-        'HOST': 'localhost',            # Адрес сервера PostgreSQL (можно указать IP-адрес или оставить "localhost")192.168.0.119
-        'PORT': '63543',                 # Порт PostgreSQL (по умолчанию это 5432)57068
+        'HOST': 'localhost',            # Адрес сервера PostgreSQL (можно указать IP-адрес или оставить "localhost")
+        'PORT': '56437',                 # Порт PostgreSQL (по умолчанию это 5432)
     }
 }
 
